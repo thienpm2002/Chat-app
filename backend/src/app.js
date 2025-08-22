@@ -4,7 +4,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const app = express();
-const routes = require('./routes');
+const routes = require('./routes/index.js');
 const logger = require('./config/logger.js');
 // Middlewares
 app.use(express.json());
