@@ -3,6 +3,7 @@ const createError = require('http-errors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const routes = require('./routes/index.js');
@@ -13,7 +14,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(morgan('common'));
 app.use(express.static(path.join(__dirname,'public')));
+app.use(cookieParser());
+
 // routes
+
 routes(app);
 
 // API Error

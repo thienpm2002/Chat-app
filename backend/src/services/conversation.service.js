@@ -3,7 +3,7 @@ const Conversation = require('../models/conversation.model.js');
 /*----------------------------------- Service cua chat 1-1 -------------------------*/
 const createChat = async (data) => {
         // Check đã tồn tại chưa
-        const { senderId, receiverId } = data;
+        const { senderId,receiverId } = data;
         let conversation = await Conversation.findOne({
             isGroup: false,
             members: { $all: [senderId, receiverId], $size: 2 },

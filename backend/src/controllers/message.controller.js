@@ -5,7 +5,9 @@ const messageService = require('../services/message.service.js');
 const createMessage = async (req,res,next) => {
     try {
         const {conversationId} = req.params;
-        const message = await messageService.createMessage(req.body,req.files,conversationId);
+        const senderId = req.payload.userId;
+        const data = {senderId,...req.body};
+        const message = await messageService.createMessage(data,req.files,conversationId);
         res.json({message});
     } catch (error) {
         next(error);

@@ -6,7 +6,9 @@ const Conversation = require('../services/conversation.service.js');
 
 const createChat = async (req,res,next) => {
     try {
-        const chat = await Conversation.createChat(req.body);
+        const senderId = req.payload.userId;
+        const data = {senderId,...req.body}
+        const chat = await Conversation.createChat(data);
         res.json(chat);
     } catch (error) {
         next(error);

@@ -26,7 +26,8 @@ const userSchema = new mongoose.Schema({
         online: {
            type: Boolean,
            default: false
-        }
+        },
+        refreshTokens: [String]
 },{timestamps: true});
 
 module.exports = mongoose.model('User',userSchema);

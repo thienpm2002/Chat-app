@@ -4,8 +4,8 @@ const path = require('path');
 const fs = require('fs');
 
 const createMessage = async (data,files,conversationId) => {
-    const {text,senderId} = data;
-
+    const {senderId,text} = data;
+    
     if(!text && (!files || files.length === 0)){
           throw  createError(400,'Message must have text or file');
     }
