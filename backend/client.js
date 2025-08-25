@@ -9,6 +9,11 @@ const socket = io(`http://localhost:${port}`, {
 socket.on("connect",()=> {
     console.log('connect',socket.id);
     
+
+    socket.emit("update_profile",{
+        user_name: 'newUserName',
+        avatar: "newavatar"
+    })
     // Tạo 1 room chat
     socket.emit('create_chat',{
         receiverId: '68ab2c95b4de59a0ec8eadee'
@@ -32,6 +37,11 @@ socket.on("user_online",(data)=> {
 })
 
 socket.on("user_offline",(data)=> {
+  console.log(data);
+})
+
+// Test update profile realtime
+socket.on("new_profile",(data) => {
   console.log(data);
 })
 

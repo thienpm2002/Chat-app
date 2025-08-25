@@ -50,6 +50,10 @@ io.on("connect",(socket) => {
         userId,
         online: true
     }) 
+
+    socket.on("update_profile",(data) => {
+        socket.broadcast.emit("new_profile", data);
+    })
     
     // Tao 1 nhóm chat và lưu vào db
     socket.on('create_chat', async (data) => {

@@ -52,10 +52,33 @@ const deleteUser = async (req, res, next) => {
     }
 }
 
+const getProfile = async (req, res, next) => {
+    try {
+        console.log(req.payload.userId);
+        const data = await userService.getProfile(req.payload.userId);
+        res.json(data);
+    } catch (error) {
+        next(error);
+    }
+}
+
+const updateProfile = async (req, res, next) => {
+    try {
+        const id = req.payload.userId;
+        const {user_name} = req.body;
+        const data = await userService.updateProfile(id,user_name,req.file);
+        res.json(data);
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     getAllUsers,
     getUser,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getProfile,
+    updateProfile
 }
