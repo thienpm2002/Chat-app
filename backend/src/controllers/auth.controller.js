@@ -45,6 +45,12 @@ const logout = async (req,res,next) => {
         const token = req.cookies.refreshToken;
         if(!token) next(createError.Unauthorized());
         await Auth.logout(token);
+        res.clearCookie("refreshToken",{
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            path: "/"
+        });
         res.json({message: 'Logout is successfully'});
     } catch (error) {
         next(error);

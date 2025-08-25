@@ -17,6 +17,7 @@ const io = new Server(server,{
 connectDB(config.mongoURI);
 const Message = require('./models/message.model.js');
 const Conversation = require('./models/conversation.model.js');
+const User = require('./models/user.model.js');
 // Middleware auth
 io.use((socket,next) => {
     try {
@@ -31,9 +32,25 @@ io.use((socket,next) => {
     }
 })
 
+const onlineUsers = {};  // Danh sách các user online 
+
 io.on("connect",(socket) => {
     console.log("User connected:", socket.id);
-     
+    
+    // Online
+    const userId = socket.userId;
+    if (!onlineUsers[userId]) {
+        onlineUsers[userId] = [];
+    }
+    onlineUsers[userId].push(socket.id);
+
+    console.log("User online:", userId, onlineUsers);
+
+    io.emit("user_online",{
+        userId,
+        online: true
+    }) 
+    
     // Tao 1 nhóm chat và lưu vào db
     socket.on('create_chat', async (data) => {
         let chat = await Conversation.findOne({
@@ -66,9 +83,20 @@ io.on("connect",(socket) => {
         // Gửi tin nhắn đến tất cả user trong nhóm chat
         io.to(data.conversationId).emit("receive_message",message);
     })
+   
 
+    socket.on("disconnect", async () => {
+        // Offline
+        onlineUsers[userId] = onlineUsers[userId].filter(socketId => socketId !== socket.id );
 
-    socket.on("disconnect", () => {
+        if(onlineUsers[userId].length === 0){
+            delete onlineUsers[userId];
+        }
+        await User.findByIdAndUpdate(userId,{ lastSeen: new Date() });
+        socket.broadcast.emit("user_offline",{
+            userId,
+            online: false
+        })
         console.log("User disconnected:", socket.id);
     });
 })

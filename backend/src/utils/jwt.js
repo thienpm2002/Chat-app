@@ -7,7 +7,7 @@ const createAccessToken = (userId) => {
     return jwt.sign(
         { userId },
         accessTokenKey,
-        { expiresIn: "1m" }
+        { expiresIn: "3m" }
     );
 };
 

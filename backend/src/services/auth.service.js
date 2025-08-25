@@ -45,12 +45,6 @@ const logout = async (token) => {
    if(!user) throw createError.Unauthorized();
    user.refreshTokens = user.refreshTokens.filter(refreshToken => refreshToken !== token);
    await user.save();
-   res.clearCookie("refreshToken",{
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/"
-   });
    return user;
 }
 

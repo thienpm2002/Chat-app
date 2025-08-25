@@ -23,10 +23,7 @@ const userSchema = new mongoose.Schema({
                 return `https://ui-avatars.com/api/?name=${this.user_name}&background=random&rounded=true`;
             }
         },
-        online: {
-           type: Boolean,
-           default: false
-        },
+        lastSeen: { type: Date, default: null },
         refreshTokens: [String]
 },{timestamps: true});
 
