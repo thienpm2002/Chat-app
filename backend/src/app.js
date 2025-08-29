@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const app = express();
 const routes = require('./routes/index.js');
@@ -15,6 +16,12 @@ app.use(helmet());
 app.use(morgan('common'));
 app.use(express.static(path.join(__dirname,'public')));
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173", 
+    credentials: true,
+  })
+);
 
 // routes
 
