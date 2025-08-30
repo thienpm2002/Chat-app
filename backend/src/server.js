@@ -45,7 +45,7 @@ io.on("connect",(socket) => {
     onlineUsers[userId].push(socket.id);
     console.log("User online:", userId, onlineUsers);
     // gui danh sach cac uẻ dang on
-    socket.emit('onlineUsers',onlineUsers);
+    io.emit('onlineUsers', onlineUsers);
 
     // gui den tất cả các socket khác la mình on
      socket.broadcast.emit("user_online",{
@@ -97,12 +97,12 @@ io.on("connect",(socket) => {
 
         if(onlineUsers[userId].length === 0){
             delete onlineUsers[userId];
+            socket.broadcast.emit("user_offline",{
+                userId,
+                socketId: socket.id
+            })
+            await User.findByIdAndUpdate(userId,{ lastSeen: new Date() });
         }
-        await User.findByIdAndUpdate(userId,{ lastSeen: new Date() });
-        socket.broadcast.emit("user_offline",{
-            userId,
-            socketId: socket.id
-        })
         console.log("User disconnected:", socket.id);
     });
 })

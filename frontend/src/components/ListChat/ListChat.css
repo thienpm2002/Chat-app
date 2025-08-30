@@ -28,7 +28,7 @@
     right: -10px;
 }
 
-.extension_icon:hover .extension_wrapper {
+.extension_icon_wrapper:hover .extension_wrapper {
      display: block;
 }
 

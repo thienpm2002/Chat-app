@@ -9,7 +9,7 @@ const login = async (req,res,next) => {
             httpOnly: true,
             path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            sameSite: "lax",  
+            sameSite: "none",  
             secure: false     
         })
         res.json({
@@ -27,7 +27,7 @@ const register = async (req,res,next) => {
             httpOnly: true,
             path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            sameSite: "lax", 
+            sameSite: "none", 
             secure: false    
         })
         res.json({
@@ -41,12 +41,13 @@ const register = async (req,res,next) => {
 const logout = async (req,res,next) => {
     try {
         const token = req.cookies.refreshToken;
-        if(!token) next(createError.Unauthorized());
+        console.log(token);
+        if(!token) return next(createError.Unauthorized());
         await Auth.logout(token);
         res.clearCookie("refreshToken",{
             httpOnly: true,
             path: "/",
-            sameSite: "lax",  
+            sameSite: "none",   
             secure: false  
         });
         res.json({message: 'Logout is successfully'});
@@ -65,7 +66,7 @@ const refresh = async (req,res,next) => {
             httpOnly: true,
             path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            sameSite: "lax", 
+            sameSite: "none", 
             secure: false     
         })
         res.json({

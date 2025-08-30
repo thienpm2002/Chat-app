@@ -44,6 +44,7 @@ function* watchSocketEvents(socket){
             console.log("Saga nhận sự kiện USER_ONLINE");
             yield put(onlineActions.userOnline(action.payload));
         }else {
+             console.log("Saga nhận sự kiện USER_OFFLINE");
              yield put(onlineActions.userOffline(action.payload));
         }
     }

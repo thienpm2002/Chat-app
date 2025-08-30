@@ -15,6 +15,8 @@ const login = async (data) => {
     if(!isPassword) throw createError.Unauthorized();
     const accessToken = createAccessToken(user._id);
     const refreshToken = createRefreshToken(user._id);
+    user.refreshTokens.push(refreshToken);   // ✅ phải lưu lại
+    await user.save();
     return {accessToken,refreshToken} ;
 }
 

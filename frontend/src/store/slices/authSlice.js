@@ -23,9 +23,17 @@ const auth = createSlice({
             state.loading = false;
             state.error = action.payload;
         }, 
-        logout: (state) => {
+        logoutRequest: (state,action) => {
+            state.loading = true;
+        },
+        logoutFailure: (state,action) => {
+            state.loading = false;
+            state.error = action.payload;
+        }, 
+        logoutSuccess: (state) => {
             state.profile = null;
             state.chats = [];
+             state.loading = false;
             localStorage.removeItem('profile');
             localStorage.removeItem('chats');
             localStorage.removeItem('accessToken');

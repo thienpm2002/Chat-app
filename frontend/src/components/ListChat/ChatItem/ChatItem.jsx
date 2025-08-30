@@ -1,6 +1,7 @@
 import React from 'react'
 import './ChatItem.css'
 import { useSelector } from 'react-redux'
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ChatItem = ({ chatId, author, latestMessage, click, handlerClick }) => {
   const socketConnected = useSelector((state) => state.socket.isConnected)
@@ -35,7 +36,7 @@ const ChatItem = ({ chatId, author, latestMessage, click, handlerClick }) => {
           src={
             author.avatar?.startsWith('http')
               ? author.avatar
-              : `http://localhost:3000${author.avatar}`
+              : `${API_URL}${author.avatar}`
           }
           alt="avatar"
           className="item_avatr"

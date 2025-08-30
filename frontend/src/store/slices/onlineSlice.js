@@ -11,7 +11,9 @@ const onlineSlice = createSlice({
             if(!state.onlineUsers[action.payload.userId]){
                 state.onlineUsers[action.payload.userId] = [];
             }
-            state.onlineUsers[action.payload.userId].push(action.payload.socketId);
+            if (!state.onlineUsers[action.payload.userId].includes(action.payload.socketId)) {
+                 state.onlineUsers[action.payload.userId].push(action.payload.socketId);
+            }
         },
         userOffline: (state,action) => {
            state.onlineUsers[action.payload.userId] = state.onlineUsers[action.payload.userId].filter(socket => socket!== action.payload.socketId);

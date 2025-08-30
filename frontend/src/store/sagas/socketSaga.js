@@ -70,7 +70,8 @@ function* socketSaga() {
       const socket = initSocket(token);
       const task = yield fork(watchSocketEvents, socket);
        // Nếu logout → hủy lắng nghe socket
-      yield take(actions.logout.type);
+      yield take(actions.logoutSuccess.type);
+      yield put(actionSocket.socketDisconnect());
       yield cancel(task);
       disconnectSocket();
     }

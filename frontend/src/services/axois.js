@@ -1,4 +1,5 @@
 import axios from "axios";
+import publicApi from "./axoisPublicApi";
 
 const api = axios.create({
     baseURL: "http://localhost:3000/api/v1",
@@ -29,8 +30,9 @@ api.interceptors.response.use(
         if (status === 401 && message === "jwt expired" && !originRequest._retry) {
             originRequest._retry = true;
             try {
-                const res = await api.post('/auth/refresh');
-                const newToken = res.accessToken;
+                const res = await publicApi.post('/auth/refresh');
+                const newToken = res.accessToken; // ✅ đúng chỗ này
+
                 localStorage.setItem('accessToken',newToken);
 
                 api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;

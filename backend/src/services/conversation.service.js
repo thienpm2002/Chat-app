@@ -26,18 +26,44 @@ const deleteChatById = async (id) => {
 }
 
 const getAllChatUser = async (userId) => {
-    const chats = await Conversation.find({
-        isGroup: false,
-        members: userId
-    })
-    .populate("members","user_name avatar")
+  const chats = await Conversation.find({
+    isGroup: false,
+    members: userId,
+  })
+    .populate("members", "user_name avatar")
     .populate({
-        path: "latestMessage",
-        populate: {path:"senderId", select:"user_name avatar"}
+      path: "latestMessage",
+      populate: { path: "senderId", select: "user_name avatar" },
     })
-    .sort({updateAt: -1});
-    return chats;
-}
+    .sort({ updatedAt: -1 });
+
+  return chats.map((chat) => {
+    const author = chat.members.find(
+      (user) => user._id.toString() !== userId.toString()
+    );
+
+    let latestMessage = chat.latestMessage?.toObject
+      ? chat.latestMessage.toObject()
+      : chat.latestMessage;
+
+    if (!latestMessage) {
+      latestMessage = { text: "No messages yet" };
+    } else if (
+      !latestMessage.text &&
+      latestMessage.attachments &&
+      latestMessage.attachments.length !== 0
+    ) {
+      latestMessage = { ...latestMessage, text: "Sent file" };
+    }
+
+    return {
+      chatId: chat._id,
+      author,
+      latestMessage,
+    };
+  });
+};
+
 
 module.exports = {
     createChat,

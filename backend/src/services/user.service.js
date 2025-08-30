@@ -69,6 +69,14 @@ const updateProfile = async (id, name, file) => {
   };
 };
 
+const search = async (key) => {
+   const users = await User.find({
+       user_name: { $regex: key, $options: 'i' }
+   }).limit(10);
+
+   return users
+};
+
 module.exports = {
     getUsers,
     getUserById,
@@ -76,5 +84,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getProfile,
-    updateProfile
+    updateProfile,
+    search
 }

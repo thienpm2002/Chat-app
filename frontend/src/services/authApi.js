@@ -1,10 +1,10 @@
-import api from './axois.js';
+import publicApi from "./axoisPublicApi";
 
 
 const authApi = {
-    login: (data) => api.post('/auth/login',data),
-    register: (data) => api.post('/auth/register',data),
-    logout: () => api.post('/auth/logout') 
+    login: (data) => publicApi.post('/auth/login',data),
+    register: (data) => publicApi.post('/auth/register',data),
+    logout: () => publicApi.post('/auth/logout') 
 }
 
 

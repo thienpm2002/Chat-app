@@ -73,6 +73,17 @@ const updateProfile = async (req, res, next) => {
     }
 }
 
+const search = async (req, res, next) => {
+    try {
+        const {key} = req.query;
+        if(!key) return res.json({});
+        const users = await userService.search(key);
+        res.json(users);
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     getAllUsers,
     getUser,
@@ -80,5 +91,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getProfile,
-    updateProfile
+    updateProfile,
+    search
 }
