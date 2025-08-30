@@ -12,9 +12,11 @@ const logger = require('./config/logger.js');
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }));
 app.use(morgan('common'));
-app.use(express.static(path.join(__dirname,'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use(cookieParser());
 app.use(
   cors({

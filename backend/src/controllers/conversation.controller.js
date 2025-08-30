@@ -17,8 +17,8 @@ const createChat = async (req,res,next) => {
 
 const getAllChatUser = async (req,res,next) => {
     try {
-        const chats = await Conversation.getAllChatUser(req.params.userId);
-        res.json({chats});
+        const chats = await Conversation.getAllChatUser(req.payload.userId);
+        res.json(chats);
     } catch (error) {
         next(error);
     }

@@ -11,18 +11,25 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // 🔥 Khi reload, nếu có token thì dispatch authSuccess
+    //  Khi reload, nếu có token thì dispatch authSuccess
     const token = localStorage.getItem("accessToken");
     const profile = localStorage.getItem("profile");
+    const chats = localStorage.getItem("chats");
 
-    if (token && profile) {
+    if (token && profile && chats) {
       try {
-        dispatch(authActions.authSuccess(JSON.parse(profile)));
+         dispatch(
+          authActions.authSuccess({
+            profile: JSON.parse(profile),
+            chats: JSON.parse(chats)
+          })
+        );
       } catch (err) {
-        console.error("Parse profile error:", err);
+        console.error("Parse error:", err);
       }
     }
   }, [dispatch]);
+
   return <RouterProvider router={routes}/>
 }
 

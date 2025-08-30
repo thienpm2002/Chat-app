@@ -41,6 +41,7 @@ const getProfile = async(id) => {
         throw createError(404,'User not found');
     }
     return {
+        id: user._id,
         user_name: user.user_name,
         avatar: user.avatar
     }

@@ -3,6 +3,8 @@ import { eventChannel } from "redux-saga";
 import {actionSocket} from '../slices/socketSlice.js'
 import { initSocket,disconnectSocket } from "../../services/socket.js";
 import {actions} from '../slices/authSlice.js'
+import api from "../../services/axois.js";
+
 // 1. Tạo channel để gom sự kiện socket
 function* createEventChannel(socket) {
     return eventChannel(emit => {
@@ -10,6 +12,21 @@ function* createEventChannel(socket) {
             console.log("✅ Socket connected:", socket.id);
             emit({ type: "SOCKET_CONNECTED" });
         });
+
+        socket.on("connect_error", async (err) => {
+            console.error("Connection error:", err.message);
+            if(err.message.includes("jwt expired")){
+                const res = await api.post('/auth/refresh');
+                const newToken = res.accessToken;
+                localStorage.setItem('accessToken',newToken);
+                // cập nhật token cho socket
+                socket.auth.token = newToken;
+                // reconnect
+                socket.connect();
+            }
+        });
+
+
         socket.on("disconnect", () => {
             console.log("❌ Socket disconnected");
             emit({ type: "SOCKET_DISCONNECTED" });
@@ -19,6 +36,7 @@ function* createEventChannel(socket) {
         return () => {
             socket.off("connect");
             socket.off("disconnect");
+            socket.off("connect_error");
         };
     })
 }

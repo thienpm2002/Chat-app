@@ -26,7 +26,17 @@ const deleteChatById = async (id) => {
 }
 
 const getAllChatUser = async (userId) => {
-    return await Conversation.find({isGroup:false,members: userId});
+    const chats = await Conversation.find({
+        isGroup: false,
+        members: userId
+    })
+    .populate("members","user_name avatar")
+    .populate({
+        path: "latestMessage",
+        populate: {path:"senderId", select:"user_name avatar"}
+    })
+    .sort({updateAt: -1});
+    return chats;
 }
 
 module.exports = {

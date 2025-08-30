@@ -4,7 +4,7 @@ const {createChat, getAllChatUser, deleteChatById} = require('../controllers/con
 
 /*-------------------- Router chat 1-1 --------------------*/
 
-router.get('/chat/:userId',getAllChatUser);
+router.get('/chat',getAllChatUser);
 
 router.post('/chat',createChat);
 

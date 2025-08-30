@@ -3,13 +3,15 @@ import createSagaMiddleware from "redux-saga";
 import authReducer from './slices/authSlice.js';
 import socketReducer from './slices/socketSlice.js'
 import rootSaga from './rootSaga.js'
+import onlineReducer from './slices/onlineSlice.js'
 
 const sagaMiddleware = createSagaMiddleware();
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
-        socket: socketReducer
+        socket: socketReducer,
+        status: onlineReducer
     },
     middleware: (getDefault) => getDefault().concat(sagaMiddleware),
 })

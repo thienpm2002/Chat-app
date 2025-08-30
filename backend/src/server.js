@@ -43,12 +43,14 @@ io.on("connect",(socket) => {
         onlineUsers[userId] = [];
     }
     onlineUsers[userId].push(socket.id);
-
     console.log("User online:", userId, onlineUsers);
+    // gui danh sach cac uẻ dang on
+    socket.emit('onlineUsers',onlineUsers);
 
-    io.emit("user_online",{
+    // gui den tất cả các socket khác la mình on
+     socket.broadcast.emit("user_online",{
         userId,
-        online: true
+        socketId: socket.id
     }) 
 
     socket.on("update_profile",(data) => {
@@ -99,7 +101,7 @@ io.on("connect",(socket) => {
         await User.findByIdAndUpdate(userId,{ lastSeen: new Date() });
         socket.broadcast.emit("user_offline",{
             userId,
-            online: false
+            socketId: socket.id
         })
         console.log("User disconnected:", socket.id);
     });

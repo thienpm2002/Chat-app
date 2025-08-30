@@ -1,4 +1,4 @@
-import {useSelector,useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 import { actions } from "../store/slices/authSlice";
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +7,6 @@ import Chat from "../components/Chat/Chat";
 import InfoChat from "../components/InforChat/InfoChat";
 
 const HomePage = () => {
-  const profile = useSelector(state => state.auth.profile);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handler = () => {
