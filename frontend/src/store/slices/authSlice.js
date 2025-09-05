@@ -21,6 +21,9 @@ const auth = createSlice({
             state.loading = false;
             state.error = action.payload;
         }, 
+        clearError: (state,action) => {
+            state.error = null;
+        },
         logoutRequest: (state,action) => {
             state.loading = true;
         },
@@ -35,6 +38,11 @@ const auth = createSlice({
             localStorage.removeItem('users');
             localStorage.removeItem('accessToken');
         },
+        authUpdate: (state,action) => {
+            state.profile.user_name = action.payload.name;
+            state.profile.avatar = action.payload.avatar;
+            localStorage.setItem('profile',JSON.stringify(state.profile));
+        }
     }
 })
 

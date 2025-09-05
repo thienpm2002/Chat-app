@@ -1,6 +1,5 @@
 import './ListChat.css';
 import { Link } from 'react-router-dom';
-import icon from '../../assets/app_icon.png';
 import ChatItem from './ChatItem/ChatItem.jsx';
 import { useSelector } from "react-redux";
 import { useState, useRef, useEffect } from 'react';
@@ -8,6 +7,7 @@ import InputSearch from './InputSearch/InputSearch.jsx';
 import ResultSearch from './ResultSearch.jsx';
 import userApi from '../../services/userApi.js';
 import api from '../../services/axois.js';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ListChat = ({ handler, handlerSelectUser,socket,click,setClick,messageNotification,setMessageNotification }) => {
   const profile = useSelector(state => state.auth.profile);
@@ -50,7 +50,10 @@ const ListChat = ({ handler, handlerSelectUser,socket,click,setClick,messageNoti
     <div className='list_wrapper'>
       <div className="list_header">
         <div className="list_header__icon">
-          <img className='app_icon' src={icon} alt="icon" />  
+          <div className= 'infor_profile'>
+            <img className= 'infor_profile_avatar' src={profile?.avatar.startsWith('/uploads') ? `${API_URL}${profile.avatar}` : profile?.avatar} alt="" />
+            <p className='infor_profile_name'>{profile?.user_name}</p>
+          </div>
           <div className="extension_icon_wrapper">
             <i className="extension_icon fa-solid fa-ellipsis-vertical"></i>
             <div className='extension_wrapper'>

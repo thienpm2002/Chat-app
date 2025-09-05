@@ -47,19 +47,42 @@ const getProfile = async(id) => {
     }
 }
 
-const updateProfile = async (id, name, file) => {
+const updateProfile = async (id, user_name, file) => {
   const user = await User.findById(id);
-  if (!user) throw createError(404, 'User not found');
+  if (!user) throw createError(404, "User not found");
 
-  if (user.avatar && user.avatar.startsWith('/uploads/')) {
-    const filePath = path.join(__dirname, '..', 'public', user.avatar.replace(/^\/+/, ''));
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+  // Nếu có file thì validate trước
+  if (file) {
+    if (file.mimetype && !file.mimetype.startsWith("image/")) {
+      throw createError(400, "Invalid file type. Only image files are allowed.");
     }
+
+    // Nếu có avatar cũ thì xoá
+    if (user.avatar && user.avatar.startsWith("/uploads/")) {
+      const filePath = path.join(
+        __dirname,
+        "..",
+        "public",
+        user.avatar.replace(/^\/+/, "")
+      );
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+          console.log("Deleted old avatar:", filePath);
+        } catch (err) {
+          console.error("Error deleting old avatar:", err.message);
+        }
+      }
+    }
+
+    // Gán avatar mới
+    user.avatar = `/uploads/${file.filename}`;
   }
 
-  if (file) user.avatar = `/uploads/${file.filename}`;
-  if (name) user.user_name = name;
+  // Nếu có user_name thì update
+  if (user_name) {
+    user.user_name = user_name;
+  }
 
   await user.save();
 
@@ -68,6 +91,7 @@ const updateProfile = async (id, name, file) => {
     avatar: user.avatar,
   };
 };
+
 
 const search = async (key) => {
    const users = await User.find({

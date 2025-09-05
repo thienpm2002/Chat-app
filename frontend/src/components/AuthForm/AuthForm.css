@@ -51,6 +51,11 @@
     background-color: oklch(71.4% .203 305.504);
     color: #fff;
 }
+.loading {
+    opacity: 0.4;
+    pointer-events: none;
+    position: relative;
+}
 
 .wrap_terms {
     display: flex;
@@ -90,7 +95,7 @@
 
 .auth-err {
     color: var(--danger-color);
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 400;
     margin-top: -15px ;
     margin-bottom: 10px;

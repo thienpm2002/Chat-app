@@ -14,7 +14,6 @@ const loginSchema = Joi.object().keys({
 
 const updateProfileSchema = Joi.object().keys({
     user_name: Joi.string().trim().max(20),
-    avatar: Joi.string().trim()
 })
 
 module.exports = {

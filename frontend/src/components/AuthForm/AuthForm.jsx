@@ -1,21 +1,23 @@
 
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { emailValidate, passwordValidate, userNameValidate } from '../../utils/authValidate.js'
 
 import './AuthForm.css'
 import { actions } from '../../store/slices/authSlice.js'
-import { useDispatch} from 'react-redux'
+import { useDispatch,useSelector} from 'react-redux'
 
 
 const AuthForm = () => {
     const [input, setInput] = useState({user_name:'', email: '', password: ''});
     const [form,setForm] = useState(false);
     const [err,setErr] = useState({user_name:'', email: '', password: ''});
-    
     const dispatch = useDispatch(); 
+    const {loading, error} = useSelector(state => state.auth);
+
     const handler = () => {
         setForm(prev => !prev);
         setErr({user_name:'', email: '', password: ''});
+        setInput({user_name:'', email: '', password: ''});
     } 
 
     const handlerInput = (e) => {
@@ -30,7 +32,8 @@ const AuthForm = () => {
     const handlerClick = (e) => {
       setErr(prev =>{
         const { name } = e.target;
-         return {
+        dispatch(actions.clearError());
+        return {
              ...prev,
              [name]: '' 
          }
@@ -46,7 +49,6 @@ const AuthForm = () => {
       setErr(errors);
       if(Object.keys(errors).length > 0) return;
       dispatch(actions.authRequest(input));
-      setInput({user_name:'', email: '', password: ''});
     }
 
   return (
@@ -83,7 +85,8 @@ const AuthForm = () => {
               value={input.password}
         />
         {err.password ? <p className='auth-err'>{err.password}</p> : ''}
-        <button className='btn-auth'>{form ? 'Create Account' : 'Login Now'}</button>
+        <button className={loading ? 'btn-auth loading' : 'btn-auth'}>{form ? 'Create Account' : 'Login Now'}</button>
+         {error && <p className='auth-err'>Invalid account or password</p>}
         <div className='wrap_redirect'>
             <p>{form ? 'Already have an account?' : 'Create an account'}</p>
             <span onClick={handler}>Click here</span>

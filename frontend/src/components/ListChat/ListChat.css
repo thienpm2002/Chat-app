@@ -14,9 +14,22 @@
     position: relative;
 }
 
-.app_icon {
-    width: 160px;
-    height: auto;
+.infor_profile {
+    display: flex;
+    align-items: center;
+}
+
+.infor_profile_avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 100%;
+}
+
+.infor_profile_name {
+    font-weight: 600;
+    color: #fff;
+    font-size: 1.6rem;
 }
 
 .extension_icon::after {
