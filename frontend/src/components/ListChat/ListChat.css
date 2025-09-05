@@ -34,7 +34,7 @@
 
 .extension_wrapper { 
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     width: 150px;
     background-color: #282142;
     border-radius: 5px;
@@ -84,3 +84,41 @@
     margin-top: 30px;
 }
 
+
+/*----------------------- Serach result -------------------*/
+.list_search_result {
+    list-style-type: none;
+    background-color: #fff;
+    position: absolute;
+    top: 35px;
+    z-index: 1;
+    width: 100%;
+    border-radius: 5px;
+    padding: 15px;
+    color: #000;
+}
+
+.search_result_item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    height: 50px;
+    padding: 0 10px;
+}
+
+.search_result_item:hover {
+    background-color: #8185b21a;
+    border-radius: 5px;
+}
+
+.result_avatar {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    border-radius: 100%;
+}
+
+.result_name {
+    font-weight: 600;
+    line-height: 2rem;
+}

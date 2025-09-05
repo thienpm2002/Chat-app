@@ -6,7 +6,6 @@ const auth = createSlice({
     name:'auth',
     initialState: {
         profile: savedProfile ||null,
-        chats:[],
         error: null,
         loading: false
     },
@@ -15,8 +14,7 @@ const auth = createSlice({
             state.loading = true;
         },
         authSuccess: (state,action) => {
-            state.profile = action.payload.profile;
-            state.chats = action.payload.chats;
+            state.profile = action.payload;
             state.loading = false;
         },
         authFailure: (state,action) => {
@@ -32,10 +30,9 @@ const auth = createSlice({
         }, 
         logoutSuccess: (state) => {
             state.profile = null;
-            state.chats = [];
-             state.loading = false;
+            state.loading = false;
             localStorage.removeItem('profile');
-            localStorage.removeItem('chats');
+            localStorage.removeItem('users');
             localStorage.removeItem('accessToken');
         },
     }

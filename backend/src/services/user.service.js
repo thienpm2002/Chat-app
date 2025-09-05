@@ -3,8 +3,8 @@ const createError = require('http-errors');
 const fs = require('fs');
 const path = require('path');
 
-const getUsers = async () => {
-    return await User.find();
+const getUsers = async (id) => {
+    return await User.find({ _id: { $ne: id } }).select('_id user_name avatar');
 }
 
 const getUserById = async (id) => {

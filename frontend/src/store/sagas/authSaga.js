@@ -4,7 +4,7 @@ import publicApi from "../../services/axoisPublicApi.js";
 import api from "../../services/axois.js";
 
 import {actions} from '../slices/authSlice.js'
-
+import { actionChats } from "../slices/chatSlice.js";
 
 function* loginSaga(action){
     try {
@@ -20,10 +20,11 @@ function* loginSaga(action){
         }
         localStorage.setItem('accessToken', res.accessToken);
         const profile = yield call(api.get,'/user/me');
-        const chats = yield call(api.get,'/chat');
-        yield put(actions.authSuccess({profile,chats}));
+        const users = yield call(api.get,'/user');
+        yield put(actions.authSuccess(profile));
+        yield put(actionChats.getUserChats(users));
+        localStorage.setItem('users', JSON.stringify(users));
         localStorage.setItem('profile', JSON.stringify(profile));
-        localStorage.setItem('chats', JSON.stringify(chats));
     } catch (error) {
         yield put(actions.authFailure(error.message));
     }

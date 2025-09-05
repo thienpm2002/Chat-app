@@ -35,10 +35,10 @@ const getAllChatUser = async (userId) => {
       path: "latestMessage",
       populate: { path: "senderId", select: "user_name avatar" },
     })
-    .sort({ updatedAt: -1 });
+    .sort({ updatedAt: -1, createdAt: -1,  });
 
   return chats.map((chat) => {
-    const author = chat.members.find(
+    const receiver = chat.members.find(
       (user) => user._id.toString() !== userId.toString()
     );
 
@@ -58,7 +58,7 @@ const getAllChatUser = async (userId) => {
 
     return {
       chatId: chat._id,
-      author,
+      receiver,
       latestMessage,
     };
   });

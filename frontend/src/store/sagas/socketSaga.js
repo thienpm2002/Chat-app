@@ -63,18 +63,19 @@ function* watchSocketEvents(socket){
 function* socketSaga() {
   while (true) {
     // lấy socket
-    yield take(actions.authSuccess.type);
-    const token = localStorage.getItem("accessToken");
-    if (token) {
+    let token = localStorage.getItem("accessToken");
+    if (!token) {
       // khi có socket → fork saga lắng nghe
-      const socket = initSocket(token);
-      const task = yield fork(watchSocketEvents, socket);
-       // Nếu logout → hủy lắng nghe socket
-      yield take(actions.logoutSuccess.type);
-      yield put(actionSocket.socketDisconnect());
-      yield cancel(task);
-      disconnectSocket();
+      yield take(actions.authSuccess.type);
+      token = localStorage.getItem("accessToken");
     }
+    const socket = initSocket(token);
+    const task = yield fork(watchSocketEvents, socket);
+       // Nếu logout → hủy lắng nghe socket
+    yield take(actions.logoutSuccess.type);
+    yield put(actionSocket.socketDisconnect());
+    yield cancel(task);
+    disconnectSocket();
   }
 }
 

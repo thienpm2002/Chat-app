@@ -3,14 +3,13 @@ import './ChatItem.css'
 import { useSelector } from 'react-redux'
 const API_URL = import.meta.env.VITE_API_URL;
 
-const ChatItem = ({ chatId, author, latestMessage, click, handlerClick }) => {
+const ChatItem = ({ receiver, click, handlerClick,messageNotification }) => {
   const socketConnected = useSelector((state) => state.socket.isConnected)
   const onlineUsers = useSelector((state) => state.status.onlineUsers)
-
   const status =
     socketConnected &&
-    onlineUsers?.[author._id] &&
-    onlineUsers[author._id].length !== 0
+    onlineUsers?.[receiver._id] &&
+    onlineUsers[receiver._id].length !== 0
 
   if (!socketConnected) {
     return (
@@ -27,29 +26,25 @@ const ChatItem = ({ chatId, author, latestMessage, click, handlerClick }) => {
   return (
     <div
       className={
-        click === chatId ? 'chat_item_wrapper active' : 'chat_item_wrapper'
+        click === receiver._id ? 'chat_item_wrapper active' : 'chat_item_wrapper'
       }
-      onClick={() => handlerClick(chatId)}
+      onClick={() => handlerClick(receiver)}
     >
       <div className="chat_item_avatar">
         <img
           src={
-            author.avatar?.startsWith('http')
-              ? author.avatar
-              : `${API_URL}${author.avatar}`
+            receiver.avatar?.startsWith('http')
+              ? receiver.avatar
+              : `${API_URL}${receiver.avatar}`
           }
           alt="avatar"
           className="item_avatr"
         />
-        <div className={status ? 'online' : 'offline'}></div>
       </div>
       <div className="chat_item_info">
-        <p className="chat_item_name">{author.user_name}</p>
-        <p className="last_chat">
-          {latestMessage?.senderId
-            ? `${latestMessage.senderId.user_name}: ${latestMessage.text}`
-            : latestMessage?.text}
-        </p>
+        <p className="chat_item_name">{receiver.user_name}</p>
+       {status ? <p className="online_status">Online</p> : <p className="offline_status">Offline</p>} 
+       {messageNotification.some(item => item.receiverId === receiver._id) && <i className="fa-solid fa-exclamation message_notification"></i>}
       </div>
     </div>
   )

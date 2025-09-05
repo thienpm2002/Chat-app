@@ -3,43 +3,63 @@ const createError = require('http-errors');
 const path = require('path');
 const fs = require('fs');
 
-const createMessage = async (data,files,conversationId) => {
-    const {senderId,text} = data;
-    
-    if(!text && (!files || files.length === 0)){
-          throw  createError(400,'Message must have text or file');
-    }
-    const attachments = files.map(file => {
-        let fileType = "other";
+const createMessage = async ({ senderId, text }, files = [], conversationId) => {
+  // accept text OR message
+  if (!text && (!files || files.length === 0)) {
+    throw createError(400, 'Message must have text or file');
+  }
 
-        if (file.mimetype.startsWith("image/")) {
-            fileType = "image";
-        } else if (file.mimetype.startsWith("video/")) {
-            fileType = "video";
-        } else if (
-            file.mimetype === "application/pdf" ||
-            file.mimetype.includes("msword") ||
-            file.mimetype.includes("officedocument")
-        ) {
-            fileType = "document";
-        }
+  const attachments = (files || []).map(file => {
+    let fileType = "other";
+    if (file.mimetype?.startsWith("image/")) fileType = "image";
+    else if (file.mimetype?.startsWith("video/")) fileType = "video";
+    else if (
+      file.mimetype === "application/pdf" ||
+      file.mimetype.includes("msword") ||
+      file.mimetype.includes("officedocument")
+    ) fileType = "document";
 
-        return {
-            url: `/uploads/${file.filename}`,  // đường dẫn file
-            type: fileType
-        };
-    });
+    return { url: `/uploads/${file.filename}`, type: fileType };
+  });
 
-    return await Message.create({
-        conversationId,
-        senderId,
-        text,
-        attachments
-    }) 
-}
+  const newMessage = await Message.create({
+    conversationId,
+    senderId,
+    text,
+    attachments
+  });
+
+  const message = await newMessage.populate("senderId", "_id user_name avatar");
+  const {senderId: sender,conversationId: chatId, ...rest} = message.toObject();
+  return {
+    ...rest,
+    sender,
+    chatId
+  };
+};
 
 const getAllMessage = async (conversationId) => {
-   return await Message.find({conversationId: conversationId});
+   const messages =  await Message.find({conversationId}).populate('senderId', '_id user_name avatar').lean();
+   return messages.map((msg) => {
+    const {senderId: sender,conversationId: chatId, ...rest} = msg;
+    return {
+      ...rest,
+      sender,
+      chatId
+    };
+   });
+}
+
+const getAllFile = async (conversationId) => {
+   const messages =  await Message.find({conversationId}).select('attachments').lean();
+   let files = [];
+   messages.forEach((msg) => {
+    const {attachments} = msg;
+    if( attachments.length !== 0) {
+       files = [...files,...attachments];
+    };
+   });
+   return files;
 }
 
 const deleteMessage = async (id) => {
@@ -74,5 +94,6 @@ const deleteMessage = async (id) => {
 module.exports = {
     createMessage,
     getAllMessage,
-    deleteMessage
+    deleteMessage,
+    getAllFile
 }

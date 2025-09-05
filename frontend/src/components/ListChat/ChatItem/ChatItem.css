@@ -2,6 +2,7 @@
     display: flex;
     padding: 10px;
     cursor: pointer;
+    position: relative;
 }
 
 .chat_item_wrapper:hover,
@@ -21,38 +22,34 @@
     border-radius: 100%;
 }
 
-.online {
-    height: 12px;
-    width: 12px;
-    border-radius: 100%;
-    position: absolute;
-    right: 13px;
-    top: 30px;
-    background-color: var(--success-color);
+.online_status, .offline_status {
+    font-size: 1.2rem;
+    font-weight: 300;
 }
 
-.offline {
-    height: 12px;
-    width: 12px;
-    border-radius: 100%;
-    position: absolute;
-    right: 13px;
-    top: 30px;
-    background-color: var(--danger-color);
+.online_status {
+   color: var(--success-color);
 }
-
+.offline_status {
+   color: var(--danger-color);
+}
 .chat_item_name {
     font-weight: 500;
 }
 
-.last_chat {
-   font-weight: 300;
-   color: oklch(70.8% 0 0);
-   font-size: 1.4rem;
-   white-space: nowrap;
-   overflow: hidden;
-   text-overflow: ellipsis;
-   max-width: 200px;
+.message_notification {
+    position: absolute;
+    top: 22px;
+    right: 10px;
+    background-color: var(--danger-color);
+    color: #fff;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
 }
 
 /*--------------------------- Loading -------------------*/
