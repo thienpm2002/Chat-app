@@ -21,10 +21,12 @@ function* loginSaga(action){
         localStorage.setItem('accessToken', res.accessToken);
         const profile = yield call(api.get,'/user/me');
         const users = yield call(api.get,'/user');
+        const notifications = yield call(api.get,'/notification');
         yield put(actions.authSuccess(profile));
         yield put(actionChats.getUserChats(users));
         localStorage.setItem('users', JSON.stringify(users));
         localStorage.setItem('profile', JSON.stringify(profile));
+        localStorage.setItem('notifications', JSON.stringify(notifications || []));
     } catch (error) {
         yield put(actions.authFailure(error.message));
     }

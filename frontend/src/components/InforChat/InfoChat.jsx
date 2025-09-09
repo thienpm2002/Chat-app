@@ -3,8 +3,7 @@ import './InfoChat.css'
 const API_URL = import.meta.env.VITE_API_URL;
 import api from '../../services/axois';
 
-const InfoChat = ({handler,receiver,chatId}) => {
-  const [files,setFiles] = useState([]);
+const InfoChat = ({handler,receiver,chatId, files, setFiles}) => {
   useEffect(()=>{
        if(!chatId) return setFiles([]);
        const getChatFile = async () => {
@@ -48,8 +47,8 @@ const InfoChat = ({handler,receiver,chatId}) => {
       <div className='media_wrapper'>
          <p>Media</p>
          <div className='list_media'>
-             {files?.length === 0 ? '' : files?.map((file) => (
-               <img key={file._id} className='media' src={`${API_URL}${file.url}`} alt="" />
+             {files?.length === 0 ? '' : files?.map((file,index) => (
+               <img key={index} className='media' src={`${API_URL}${file.url}`} alt="" />
              ))}
          </div>
       </div>

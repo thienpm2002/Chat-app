@@ -9,7 +9,7 @@ const login = async (req,res,next) => {
             httpOnly: true,
             path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            sameSite: "none",  
+            sameSite: "Lax", 
             secure: false     
         })
         res.json({
@@ -27,7 +27,7 @@ const register = async (req,res,next) => {
             httpOnly: true,
             path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            sameSite: "none", 
+            sameSite: "Lax",
             secure: false    
         })
         res.json({
@@ -41,13 +41,12 @@ const register = async (req,res,next) => {
 const logout = async (req,res,next) => {
     try {
         const token = req.cookies.refreshToken;
-        console.log(token);
-        if(!token) return next(createError.Unauthorized());
+        if(!token) return next(createError.Unauthorized("Refresh token is not provided"));
         await Auth.logout(token);
         res.clearCookie("refreshToken",{
             httpOnly: true,
             path: "/",
-            sameSite: "none",   
+            sameSite: "Lax",  
             secure: false  
         });
         res.json({message: 'Logout is successfully'});
@@ -58,15 +57,14 @@ const logout = async (req,res,next) => {
 
 const refresh = async (req,res,next) => {
     try {
-        console.log(req.cookies);
         const token = req.cookies.refreshToken;
-        if(!token) next(createError.Unauthorized());
+        if(!token) return next(createError.Unauthorized("Refresh token is not provided"));
         const {accessToken,refreshToken} = await Auth.refresh(token);
         res.cookie("refreshToken",refreshToken,{
             httpOnly: true,
             path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            sameSite: "none", 
+            sameSite: "Lax",
             secure: false     
         })
         res.json({

@@ -92,7 +92,7 @@
 }
 
 .send .message_text {
-    background-color: pink;
+    background-color: #ffc0cbde;
 }
 
 
@@ -101,6 +101,6 @@
 }
 
 .receive .message_text {
-    background-color: aqua;
+    background-color: #00ffffa8;
     align-self: flex-start;
 }

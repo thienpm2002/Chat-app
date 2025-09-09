@@ -8,22 +8,28 @@ import ResultSearch from './ResultSearch.jsx';
 import userApi from '../../services/userApi.js';
 import api from '../../services/axois.js';
 const API_URL = import.meta.env.VITE_API_URL;
+import { useDispatch } from 'react-redux';
+import { onlineActions } from '../../store/slices/onlineSlice';
 
-const ListChat = ({ handler, handlerSelectUser,socket,click,setClick,messageNotification,setMessageNotification }) => {
+const ListChat = ({ handler, handlerSelectUser,socket,click,setClick }) => {
   const profile = useSelector(state => state.auth.profile);
   const [listResult, setListResult] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const users = useSelector(state => state.chat.users);
+  const listNotification = JSON.parse(localStorage.getItem('notifications'));
+  const [notifications, setNotifications] = useState(listNotification);
   const [input,setInput] = useState('');
   const wrapperRef = useRef(null);
-
+  const dispatch = useDispatch();
+  
+  
   const handlerClick = async (receiver) => {
     const chat = await api.post('/chat',{receiverId: receiver._id});
     socket.emit('join_room', chat._id);
     handlerSelectUser(receiver, chat._id);
     if(click === receiver._id) return;
     setClick(receiver._id);
-    setMessageNotification(prev => prev.filter(item => item.receiverId !== receiver._id));
+    dispatch(onlineActions.clearMessageNotification(receiver._id));
   };
 
   const onSearch = async (key) => {
@@ -37,6 +43,27 @@ const ListChat = ({ handler, handlerSelectUser,socket,click,setClick,messageNoti
     setListResult(false);
     setInput('');
   };
+
+
+  useEffect(() => {
+    const updateNotification = async () => {
+       try {
+        const senderId = click;
+        if(senderId && notifications.some(item => item.senderId === senderId && item.receiverId === profile?.id) ){
+            await api.patch('/notification',{senderId});
+            const newNotifications = notifications.filter(
+              item => !(item.senderId === senderId && item.receiverId === profile.id)
+            );
+            setNotifications(newNotifications);
+            localStorage.setItem('notifications',JSON.stringify(newNotifications));
+        }
+       } catch (error) {
+        console.log(error);
+       }
+    }
+    updateNotification();
+  }, [click]);
+
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -72,7 +99,7 @@ const ListChat = ({ handler, handlerSelectUser,socket,click,setClick,messageNoti
       <div className="list">
         <ul>
           {users.map((user) => (
-            <ChatItem key={user._id} click={click} handlerClick={handlerClick} receiver={user} messageNotification={messageNotification}/>
+            <ChatItem key={user._id} click={click} handlerClick={handlerClick} receiver={user} notifications={notifications}/>
           ))}
         </ul>
       </div>

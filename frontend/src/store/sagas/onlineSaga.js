@@ -20,11 +20,16 @@ function* createEventChannel(socket) {
             emit({type:'USER_OFFLINE', payload: data});
         })
 
+        socket.on('message_notification',(data) => {
+            emit({type:'MESSAGE_NOTIFICATION', payload: data});
+        })
+
         // cleanup khi channel close
         return () => {
             socket.off("onlineUsers");
             socket.off("user_online");
             socket.off("user_offline");
+            socket.off("message_notification");
         };
     })
 }
@@ -38,14 +43,13 @@ function* watchSocketEvents(socket){
 
         // ở đây mình có thể dispatch sang Redux
         if (action.type === "LIST_USER_ONLINE") {
-            console.log("Saga nhận sự kiện LIST_USER_ONLINE");
             yield put(onlineActions.getUserOnlines(action.payload));
         } else if (action.type === "USER_ONLINE") {
-            console.log("Saga nhận sự kiện USER_ONLINE");
             yield put(onlineActions.userOnline(action.payload));
-        }else {
-             console.log("Saga nhận sự kiện USER_OFFLINE");
+        }else if (action.type === "USER_OFFLINE") {
              yield put(onlineActions.userOffline(action.payload));
+        } else {
+            yield put(onlineActions.messageNotification(action.payload));
         }
     }
 }

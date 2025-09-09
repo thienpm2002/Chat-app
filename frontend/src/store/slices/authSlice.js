@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit"; 
 
-const savedProfile = JSON.parse(localStorage.getItem('profile'));
+const savedProfile = JSON.parse(localStorage.getItem('profile') || "null");
 
 const auth = createSlice({
     name:'auth',
     initialState: {
-        profile: savedProfile ||null,
+        profile: savedProfile || null,
         error: null,
         loading: false
     },
@@ -37,6 +37,7 @@ const auth = createSlice({
             localStorage.removeItem('profile');
             localStorage.removeItem('users');
             localStorage.removeItem('accessToken');
+            localStorage.removeItem('notifications');
         },
         authUpdate: (state,action) => {
             state.profile.user_name = action.payload.name;

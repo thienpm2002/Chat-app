@@ -16,7 +16,7 @@ const HomePage = () => {
   const [receiver, setReceiver] = useState(null);   // lay thong tin nguoi nhan
   const [chatId, setChatId] = useState(null);    // Lay id cua phong chat
   const [click, setClick] = useState();  // Bien de biet dang click vao user nao de active
-   const [messageNotification, setMessageNotification] = useState([]); // Bien de hien thi thong bao tin nhan moi
+   const [files,setFiles] = useState([]); // Bien chua media
   const socket = getSocket();
 
   const handler = () => dispatch(actions.logoutRequest());
@@ -26,7 +26,7 @@ const HomePage = () => {
   }, [profile, navigate]);
 
 
-  const handlerSelectUser = (user, id) => {
+  const handlerSelectUser = (user, id) => {  
     setReceiver(user);
     setChatId(id);
   };
@@ -40,17 +40,15 @@ const HomePage = () => {
           socket={socket}
           click={click}
           setClick={setClick}
-          messageNotification={messageNotification}
-          setMessageNotification={setMessageNotification}
         />
         <Chat 
           receiver={receiver} 
           chatId={chatId} 
           socket={socket} 
           click={click} 
-          setMessageNotification={setMessageNotification} 
+          setFiles={setFiles}
         />
-        <InfoChat handler={handler} receiver={receiver} chatId={chatId} />
+        <InfoChat handler={handler} receiver={receiver} chatId={chatId} files={files} setFiles={setFiles} />
       </div>
     </div>
   );

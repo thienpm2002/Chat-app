@@ -4,12 +4,15 @@ import FormSendMessage from './FormSendMessage/FormSendMessage';
 import api from '../../services/axois';
 import { useSelector } from 'react-redux';
 import debugFormData from '../../utils/formData.js'
+import { useDispatch } from 'react-redux';
+import { onlineActions } from '../../store/slices/onlineSlice';
 const API_URL = import.meta.env.VITE_API_URL;
 
-const Chat = ({ receiver, chatId,socket,click,setMessageNotification}) => {
+const Chat = ({ receiver, chatId,socket,click, setFiles}) => {
   const [listMessage, setListMessage] = useState([]) // List message trong chat dung de update khi co new message
   const profile = useSelector(state => state.auth.profile);
   const messagesEndRef = useRef(null);
+  const dispatch = useDispatch();
   useEffect( ()=>{   // Lay list message tu chatId
      if(!socket) return;
      const fetchMessage = async () => {
@@ -25,10 +28,11 @@ const Chat = ({ receiver, chatId,socket,click,setMessageNotification}) => {
       const receiverMessage = (newMessage) => {
          if(newMessage.chatId !== chatId) return;
          setListMessage(prev => [...prev,newMessage]);
+         setFiles(prev => [...prev, ...(newMessage.attachments || [])]);
       }
        const notificationMessage = (senderId) => {
          if(click !== senderId) {
-           setMessageNotification(prev => [...prev,{receiverId: senderId,status: true}]);
+           dispatch(onlineActions.messageNotification({receiverId: senderId,status: true}));
          }
       }
       socket.on('receive_message', receiverMessage);
@@ -54,6 +58,7 @@ const Chat = ({ receiver, chatId,socket,click,setMessageNotification}) => {
         receiver
       }
       setListMessage(prev => [...prev,newMessage]);
+      setFiles(prev => [...prev, ...(newMessage.attachments || [])]);
       socket.emit('send_message', data);
     } catch (error) {
       console.log(error);

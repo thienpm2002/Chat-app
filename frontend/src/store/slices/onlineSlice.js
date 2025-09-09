@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const savedNotification = JSON.parse(localStorage.getItem('notifilecation'));
+
 const onlineSlice = createSlice({
     name:'online',
-    initialState: {onlineUsers: {}},
+    initialState: {onlineUsers: {},messageNotification: savedNotification || []},
     reducers: {
         getUserOnlines: (state,action) => {
              state.onlineUsers = action.payload;
@@ -21,6 +23,16 @@ const onlineSlice = createSlice({
               delete state.onlineUsers[action.payload.userId];
            }
         },
+        messageNotification: (state,action) => {
+           state.messageNotification.push(action.payload);
+           localStorage.setItem('notifilecation', JSON.stringify(state.messageNotification)); 
+        },
+        clearMessageNotification: (state,action) => {
+            if(state.messageNotification.some(item => item.receiverId === action.payload)){
+               state.messageNotification = state.messageNotification.filter(item => item.receiverId !== action.payload);
+               localStorage.setItem('notifilecation', JSON.stringify(state.messageNotification)); 
+            }
+        }
     }
 })
 

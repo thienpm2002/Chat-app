@@ -12,7 +12,7 @@ const io = new Server(server, { cors: { origin: "*" } });
 connectDB(config.mongoURI);
 
 const User = require('./models/user.model.js');
-
+const Notification = require('./models/notification.model.js');
 // Middleware xác thực socket
 io.use((socket, next) => {
     try {
@@ -56,7 +56,20 @@ io.on("connect", (socket) => {
     socket.on('send_message', async (data) => {
         try {
             const { receiver , newMessage } = data;
-            io.to(receiver._id.toString()).emit("message_notification", newMessage.sender._id);
+            if(onlineUsers[receiver._id] && onlineUsers[receiver._id].length !==0){
+                io.to(receiver._id.toString()).emit("message_notification", newMessage.sender._id);
+            }else {
+                const existingNotifications = await Notification.find({
+                    senderId: newMessage.sender._id,
+                    receiverId: receiver._id
+                })
+                if(existingNotifications.length === 0){
+                    await Notification.create({
+                        senderId: newMessage.sender._id,
+                        receiverId: receiver._id
+                    })
+                }
+            }
             socket.to(newMessage.chatId.toString()).emit("receive_message", newMessage);
 
         } catch (err) {

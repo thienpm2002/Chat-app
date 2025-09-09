@@ -3,6 +3,7 @@ const authRouter = require('./auth.route.js');
 const conversationRouter = require('./conversation.route.js');
 const messageRouter = require('./message.route.js');
 const searchRouter = require('./search.route.js');
+const notificationRouter = require('./notification.route.js');
 
 const {auth} = require('../middlewares/auth.middleware.js');
 
@@ -12,6 +13,7 @@ const routes = (app) => {
     app.use('/api/v1',auth,searchRouter);
     app.use('/api/v1',auth,conversationRouter);
     app.use('/api/v1',auth,messageRouter);
+    app.use('/api/v1',auth,notificationRouter);
 }
 
 module.exports = routes;

@@ -31,7 +31,7 @@ api.interceptors.response.use(
             originRequest._retry = true;
             try {
                 const res = await publicApi.post('/auth/refresh');
-                const newToken = res.accessToken; // ✅ đúng chỗ này
+                const newToken = res.accessToken; 
 
                 localStorage.setItem('accessToken',newToken);
 
@@ -41,9 +41,17 @@ api.interceptors.response.use(
                 return api(originRequest);
 
             } catch (error) {
-                localStorage.removeItem("accessToken");
-                // window.location.href = "/login";
+                if (err.response?.status === 401) {
+                    localStorage.removeItem("accessToken");
+                    window.location.href = "/login";
+                    return;
+                }
             }
+        }
+        if (status === 401 && (message === "Refresh token is not provided" || message === "Invalid token")) {
+            localStorage.removeItem("accessToken");
+            window.location.href = "/login";
+            return;
         }
         return Promise.reject(error);
     }

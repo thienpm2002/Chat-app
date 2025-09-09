@@ -12,7 +12,7 @@ const LoginPage = () => {
       if(auth.profile?.user_name){ 
           navigate('/home');
       }
-  }, [auth.profile?.user_name]);
+  }, [auth.profile,navigate]);
 
   return (
     <div className='wapper'>
